@@ -5,13 +5,12 @@ using UnityEngine;
 public class VerticalMouseLook : MonoBehaviour
 {
     [SerializeField] float verticalMouseSpeed = 30f;
+    [SerializeField] float xAxisClamp = 0f;
 
-    Vector2 rotation = new Vector2(0, 0);
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
@@ -19,13 +18,32 @@ public class VerticalMouseLook : MonoBehaviour
     {
        VerticalMouse();
     }
+
     void VerticalMouse()
     {
-        
+        float mouseY = Input.GetAxis("Mouse Y") * verticalMouseSpeed * Time.deltaTime;
+        xAxisClamp += mouseY;
 
-        float yMouse = Input.GetAxis("Mouse Y") * verticalMouseSpeed * Time.deltaTime;
-        transform.Rotate(-yMouse, 0, 0);
-        Cursor.lockState = CursorLockMode.Locked;
-        
+        if(xAxisClamp > 90f)
+        {
+            xAxisClamp = 90f;
+            mouseY = 0f;
+            clampXAxisRotationToValue(270f);
+        }
+        else if (xAxisClamp < -90f)
+        {
+            xAxisClamp = -90f;
+            mouseY = 0f;
+            clampXAxisRotationToValue(90f);
+        }
+
+        transform.Rotate(-mouseY, 0, 0);
+    }
+
+    void clampXAxisRotationToValue(float value)
+    {
+        Vector3 eulerRotation = transform.eulerAngles;
+        eulerRotation.x = value;
+        transform.eulerAngles = eulerRotation;
     }
 }

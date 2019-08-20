@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 
-    [SerializeField] bool isGrounded = true;
+    [SerializeField] bool isGrounded = false;
     [SerializeField] float jumpForce = 500f;
 
 
@@ -13,7 +13,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float playerSpeed = 10f;
  
 
-   
     Rigidbody rb;
 
     void Start()
@@ -26,11 +25,6 @@ public class PlayerMovement : MonoBehaviour
         HorizontalRotation();
         
         Movement();
-        Jump();
-
-
-
-
     }
     void Movement()
     {
@@ -49,22 +43,15 @@ public class PlayerMovement : MonoBehaviour
 
         transform.Rotate(0, yRotation, 0);
     }
-   
+
     void Jump()
     {
-        if (Input.GetButtonDown("Jump") && isGrounded == true)
-        {
-            isGrounded = false;
-            rb.AddForce(0, jumpForce, 0);
-        }
-        else if(isGrounded == false)
-        {
-            rb.AddForce(0, 0, 0);
-        }
-    }
-    void OnCollisionEnter(Collision collision)
-    {
-        isGrounded = true;   
-    }
+        rb.AddForce(0, jumpForce, 0);
+        Invoke("StopJump", 1f);
 
+    }
+    void StopJump()
+    {
+        rb.AddForce(0, 0, 0);
+    }
 }
